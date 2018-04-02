@@ -1,0 +1,7 @@
+[
+    {
+        "caption": "LSP: Setup lsp-tsserver",
+        "command": "lsp_tss_setup",
+        "args": {}
+    }
+]

@@ -1,14 +1,17 @@
+import shutil
+import sublime
+import sublime_plugin
 from LSP.plugin.core.handlers import LanguageHandler
 from LSP.plugin.core.settings import ClientConfig
 
 default_name = 'tss'
+server_pkg_name = 'lsp-tsserver'
+server_pkg_location = 'lsp-tsserver'
 
 default_config = ClientConfig(
     name=default_name,
     binary_args=[
-        "node",
-        "/Users/tomv/Projects/tomv564/lsp-tsserver/server/build/src/server.js",
-        "--traceToConsole", "true", "--logVerbosity", "terse"
+        "lsp-tsserver", "--traceToConsole", "true", "--logVerbosity", "terse"
     ],
     tcp_port=None,
     scopes=["source.ts", "source.tsx", "source.js", "source.jsx"],
@@ -25,7 +28,37 @@ default_config = ClientConfig(
     env=dict())
 
 
-class TSSLSPPlugin(LanguageHandler):
+def node_is_installed() -> bool:
+    return shutil.which("node") is not None
+
+
+def server_is_installed() -> bool:
+    return shutil.which(server_pkg_name) is not None
+
+
+class LspTssSetupCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        if not node_is_installed():
+            sublime.message_dialog(
+                "Please install Node.js before running setup".format(
+                    server_pkg_name))
+        elif not server_is_installed():
+            if sublime.ok_cancel_dialog(
+                    "{} was not in the PATH\nInstall globally now?".format(
+                        server_pkg_name)):
+                self.window.run_command(
+                    "exec", {
+                        "cmd": [
+                            "npm", "install", "--verbose", "-g",
+                            server_pkg_location
+                        ],
+                    })
+        else:
+            sublime.message_dialog(
+                "{} is already installed".format(server_pkg_name))
+
+
+class LspTssPlugin(LanguageHandler):
     def __init__(self):
         self._name = default_name
         self._config = default_config
@@ -39,8 +72,17 @@ class TSSLSPPlugin(LanguageHandler):
     def config(self) -> ClientConfig:
         return self._config
 
-    def on_enable(self) -> None:
-        print("enabling")
+    def on_start(self, window) -> bool:
+        if not node_is_installed():
+            window.status_message(
+                "Node.js must be installed to run {}".format(server_pkg_name))
+            return False
+        if not server_is_installed():
+            window.status_message(
+                "{} was not in the PATH. Run Setup {} to install".format(
+                    server_pkg_name, server_pkg_name))
+            return False
+        return True
 
     def on_initialize(self, client) -> None:
-        print("initializing")
+        pass  # extra initialization here.
