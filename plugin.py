@@ -84,5 +84,5 @@ class LspTssPlugin(LanguageHandler):
             return False
         return True
 
-    def on_initialize(self, client) -> None:
+    def on_initialized(self, client) -> None:
         pass  # extra initialization here.
