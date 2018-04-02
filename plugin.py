@@ -62,7 +62,6 @@ class LspTssPlugin(LanguageHandler):
     def __init__(self):
         self._name = default_name
         self._config = default_config
-        pass
 
     @property
     def name(self) -> str:
