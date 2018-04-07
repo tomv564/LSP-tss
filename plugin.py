@@ -1,4 +1,5 @@
 import shutil
+import os
 import sublime
 import sublime_plugin
 from LSP.plugin.core.handlers import LanguageHandler
@@ -6,18 +7,24 @@ from LSP.plugin.core.settings import ClientConfig
 
 default_name = 'tss'
 server_pkg_name = 'lsp-tsserver'
-server_pkg_location = 'lsp-tsserver'
+npm_command = 'npm'
+server_command = 'lsp-tsserver'
+if os.name == 'nt':
+    npm_command = 'npm.cmd'
+    server_command = 'lsp-tsserver.cmd'
 
 default_config = ClientConfig(
     name=default_name,
     binary_args=[
-        "lsp-tsserver", "--traceToConsole", "true", "--logVerbosity", "terse"
+        server_command, "--traceToConsole", "true", "--logVerbosity", "terse"
     ],
     tcp_port=None,
     scopes=["source.ts", "source.tsx", "source.js", "source.jsx"],
     syntaxes=[
         "Packages/TypeScript-TmLanguage/TypeScript.tmLanguage",
         "Packages/TypeScript-TmLanguage/TypeScriptReact.tmLanguage",
+        "Packages/TypeScript Syntax/TypeScript.tmLanguage",
+        "Packages/TypeScript Syntax/TypeScriptReact.tmLanguage",
         "Packages/Babel/JavaScript (Babel).sublime-syntax",
         "Packages/JavaScript/JavaScript.sublime-syntax"
     ],
@@ -49,8 +56,8 @@ class LspTssSetupCommand(sublime_plugin.WindowCommand):
                 self.window.run_command(
                     "exec", {
                         "cmd": [
-                            "npm", "install", "--verbose", "-g",
-                            server_pkg_location
+                            npm_command, "install", "--verbose", "-g",
+                            server_pkg_name
                         ],
                     })
         else:
