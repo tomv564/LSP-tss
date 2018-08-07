@@ -3,7 +3,7 @@ import os
 import sublime
 import sublime_plugin
 from LSP.plugin.core.handlers import LanguageHandler
-from LSP.plugin.core.settings import ClientConfig
+from LSP.plugin.core.settings import ClientConfig, LanguageConfig
 
 default_name = 'tss'
 server_pkg_name = 'lsp-tsserver'
@@ -19,20 +19,15 @@ default_config = ClientConfig(
         server_command, "--traceToConsole", "true", "--logVerbosity", "terse"
     ],
     tcp_port=None,
-    scopes=["source.ts", "source.tsx", "source.js", "source.jsx"],
-    syntaxes=[
-        "Packages/TypeScript-TmLanguage/TypeScript.tmLanguage",
-        "Packages/TypeScript-TmLanguage/TypeScriptReact.tmLanguage",
-        "Packages/TypeScript Syntax/TypeScript.tmLanguage",
-        "Packages/TypeScript Syntax/TypeScriptReact.tmLanguage",
-        "Packages/Babel/JavaScript (Babel).sublime-syntax",
-        "Packages/JavaScript/JavaScript.sublime-syntax"
-    ],
-    languageId='typescript',
     enabled=False,
     init_options=dict(),
     settings=dict(),
-    env=dict())
+    env=dict(),
+    languages=[
+        LanguageConfig("javascript", ["source.js", "source.jsx"], ["JavaScript"]),
+        LanguageConfig("typescript", ["source.ts", "source.tsx"], ["TypeScript"])
+    ]
+)
 
 
 def node_is_installed() -> bool:
