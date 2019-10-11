@@ -24,12 +24,14 @@ default_config = ClientConfig(
     settings=dict(),
     env=dict(),
     languages=[
-        LanguageConfig("javascript", ["source.js", "source.jsx"],
-                       ["JavaScript (Babel).sublime-syntax",
-                       "Packages/JavaScript/JavaScript.sublime-syntax"]),
-        LanguageConfig("typescript", ["source.ts", "source.tsx"], ["TypeScript"])
-    ]
-)
+        LanguageConfig("javascript", ["source.js", "source.jsx"], [
+            "JavaScript (Babel).sublime-syntax",
+            "Packages/JavaScript/JavaScript.sublime-syntax"
+        ]),
+        LanguageConfig("typescript", ["source.ts", "source.tsx"], [
+            "Packages/TypeScript-TmLanguage/TypeScript.tmLanguage"
+        ])
+    ])
 
 
 def node_is_installed() -> bool:
